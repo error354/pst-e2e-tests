@@ -1,17 +1,16 @@
 import { expect, test } from '../src/fixtures/merge.fixture';
-import {
-  customer,
-  invalid,
-} from '../src/data/users.data';
+import { customer, invalid } from '../src/data/users.data';
 import { prepareRandomAccount } from '../src/factories/user.factory';
 
 test.describe('Login', () => {
+  test.beforeEach(async ({ loginPage }) => {
+    await loginPage.goto();
+  });
+
   test('can not log in with invalid credentials', async ({
     page,
     loginPage,
   }) => {
-    await loginPage.goto();
-
     await expect(page).toHaveTitle(
       /Login - Practice Software Testing - Toolshop - v/,
     );
@@ -28,7 +27,6 @@ test.describe('Login', () => {
     loginPage,
     accountPage,
   }) => {
-    await loginPage.goto();
     await loginPage.login(customer);
 
     await expect(page).toHaveURL(/\/account/);
@@ -39,10 +37,13 @@ test.describe('Login', () => {
 });
 
 test.describe('Register', () => {
+  test.beforeEach(async ({ registerPage }) => {
+    await registerPage.goto();
+  });
+
   test('can register a new account', async ({ page, registerPage }) => {
     const accountData = prepareRandomAccount();
 
-    await registerPage.goto();
     const registerPromise = page.waitForResponse((response) =>
       response.url().includes('/register'),
     );
@@ -55,9 +56,18 @@ test.describe('Register', () => {
 
   test('can not register without required data', async ({ registerPage }) => {
     const registerErrorsMessages = [
-      { selector: registerPage.firstNameError, message: 'First name is required' },
-      { selector: registerPage.lastNameError, message: ' Last name is required' },
-      { selector: registerPage.dateOfBirthError, message: 'Date of Birth is required' },
+      {
+        selector: registerPage.firstNameError,
+        message: 'First name is required',
+      },
+      {
+        selector: registerPage.lastNameError,
+        message: 'Last name is required',
+      },
+      {
+        selector: registerPage.dateOfBirthError,
+        message: 'Date of Birth is required',
+      },
       { selector: registerPage.addressError, message: 'Address is required' },
       { selector: registerPage.postcodeError, message: 'Postcode is required' },
       { selector: registerPage.cityError, message: 'City is required' },
@@ -73,7 +83,6 @@ test.describe('Register', () => {
       },
     ];
 
-    await registerPage.goto();
     await registerPage.registerButton.click();
 
     for (const { selector, message } of registerErrorsMessages) {
@@ -85,7 +94,6 @@ test.describe('Register', () => {
     const accountData = prepareRandomAccount();
     accountData.password = 'Pw1!';
 
-    await registerPage.goto();
     await registerPage.register(accountData);
 
     await expect(registerPage.passwordError).toHaveText(
@@ -99,6 +107,7 @@ test.describe('Logout', () => {
   test('can log out', async ({ page, accountPage }) => {
     await accountPage.goto();
     await accountPage.logOut();
+
     await expect(page).toHaveURL(/\/auth\/login/);
   });
 });

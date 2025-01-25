@@ -1,0 +1,66 @@
+import { expect, test } from '../src/fixtures/merge.fixture';
+import { products } from '../src/data/products.data';
+import { getProductByName } from '../src/utils/products';
+import { CartPage } from '../src/pages/cart.page';
+import { Product, ProductResponse } from '../src/models/product.model';
+import { customer } from '../src/data/users.data';
+import { prepareRandomAddress } from '../src/factories/address.factory';
+import { prepareRandomCard } from '../src/factories/card.factory';
+
+test.describe('Checkout', () => {
+  let product: ProductResponse;
+  let productInCart: Product;
+  let cartPage: CartPage;
+
+  test.beforeAll(async () => {
+    product = await getProductByName(products.boltCutters);
+    productInCart = {
+      id: product.id,
+      quantity: 2,
+    };
+  });
+
+  test.beforeEach(async ({ cart }) => {
+    cartPage = (await cart([productInCart])).cartPage;
+  });
+
+  test.use({ storageState: { cookies: [], origins: [] } });
+  test('can log in and buy products', async ({ loginPage }) => {
+    const paymentMethod = 'cash-on-delivery';
+    const address = prepareRandomAddress();
+
+    await cartPage.proceed();
+    await loginPage.login(customer);
+    await cartPage.proceed();
+
+    await expect(cartPage.addressForm.streetInput).not.toBeEmpty();
+    await expect(cartPage.goToCheckoutButton).toBeDisabled();
+
+    await cartPage.addressForm.stateInput.fill(address.state);
+    await cartPage.addressForm.postcodeInput.fill(address.postalcode);
+    await cartPage.proceed();
+    await cartPage.choosePaymentMethod(paymentMethod);
+    const invoiceNumber = await cartPage.confirmPayment();
+
+    await expect(cartPage.orderConfirmation).toHaveText(
+      `Thanks for your order! Your invoice number is ${invoiceNumber}.`,
+    );
+  });
+
+  test.use({ storageState: '.auth\\customer.json' });
+
+  test('can pay by card', async () => {
+    const address = prepareRandomAddress();
+    const card = prepareRandomCard();
+    const paymentMethod = 'credit-card';
+
+    await cartPage.goToPaymentMethod(address);
+    await cartPage.choosePaymentMethod(paymentMethod);
+    await cartPage.fillCardData(card);
+    const invoiceNumber = await cartPage.confirmPayment();
+
+    await expect(cartPage.orderConfirmation).toHaveText(
+      `Thanks for your order! Your invoice number is ${invoiceNumber}.`,
+    );
+  });
+});

@@ -74,11 +74,11 @@ export class CartPage extends BasePage {
   goToPaymmentMethod = (address: Address, paymentMethod: string) => {
     this.getGoToCheckoutButton1().click();
     this.getGoToCheckoutButton2().click();
-    // await this.page.waitForLoadState('networkidle');
-    this.addressForm.getStreetInput().type(address.street);
-    this.addressForm.getCityInput().type(address.city);
-    this.addressForm.getStateInput().type(address.state);
-    this.addressForm.getPostcodeInput().type(address.postalcode);
+    this.addressForm.getStreetInput().clear().type(address.street);
+    this.addressForm.getCityInput().clear().type(address.city);
+    this.addressForm.getStateInput().clear().type(address.state);
+    this.addressForm.getPostcodeInput().clear().type(address.postalcode);
+    this.getGoToCheckoutButton3().click();
     this.choosePaymentMethod(paymentMethod);
   };
 
@@ -86,6 +86,7 @@ export class CartPage extends BasePage {
     this.cardForm.getCardNumberInput().type(card.cardNumber);
     this.cardForm.getExpiryDateInput().type(card.expiryDate);
     this.cardForm.getCvvInput().type(card.cvv);
+    this.cardForm.getCardHolderNameInput().type(card.holderName);
   };
 
   fillBankTransferData = (bankTransfer: BankTransfer) => {

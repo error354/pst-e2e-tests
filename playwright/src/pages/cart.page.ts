@@ -91,16 +91,16 @@ export class CartPage extends BasePage {
     return invoiceNumber;
   }
 
-  async goToPaymentMethod(address: Address) {
+  async goToPaymentMethod(address: Address, paymentMethod: string) {
     await this.proceed();
     await this.proceed();
     await this.page.waitForLoadState('networkidle');
-    await this.addressForm.streetInput.fill(address.street);
     await this.addressForm.streetInput.fill(address.street);
     await this.addressForm.cityInput.fill(address.city);
     await this.addressForm.stateInput.fill(address.state);
     await this.addressForm.postcodeInput.fill(address.postalcode);
     await this.proceed();
+    await this.choosePaymentMethod(paymentMethod);
   }
 
   async fillCardData(card: Card) {

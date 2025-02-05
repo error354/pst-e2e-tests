@@ -55,8 +55,7 @@ test.describe('Logged in', () => {
     const card = prepareRandomCard();
     const paymentMethod = 'credit-card';
 
-    await cartPage.goToPaymentMethod(address);
-    await cartPage.choosePaymentMethod(paymentMethod);
+    await cartPage.goToPaymentMethod(address, paymentMethod);
     await cartPage.fillCardData(card);
     const invoiceNumber = await cartPage.confirmPayment();
 
@@ -70,8 +69,7 @@ test.describe('Logged in', () => {
     const bankTransfer = prepareRandomBankTransfer();
     const paymentMethod = 'bank-transfer';
 
-    await cartPage.goToPaymentMethod(address);
-    await cartPage.choosePaymentMethod(paymentMethod);
+    await cartPage.goToPaymentMethod(address, paymentMethod);
     await cartPage.fillBankTransferData(bankTransfer);
     const invoiceNumber = await cartPage.confirmPayment();
 
@@ -85,8 +83,7 @@ test.describe('Logged in', () => {
     const paymentMethod = 'buy-now-pay-later';
     const installmentsNumber = 6;
 
-    await cartPage.goToPaymentMethod(address);
-    await cartPage.choosePaymentMethod(paymentMethod);
+    await cartPage.goToPaymentMethod(address, paymentMethod);
     await cartPage.selectMonthlyInstallments(installmentsNumber);
     const invoiceNumber = await cartPage.confirmPayment();
 
@@ -101,8 +98,7 @@ test.describe('Logged in', () => {
     const giftCardNumber = '1234567890';
     const giftCardValidationCode = '1234';
 
-    await cartPage.goToPaymentMethod(address);
-    await cartPage.choosePaymentMethod(paymentMethod);
+    await cartPage.goToPaymentMethod(address, paymentMethod);
     await cartPage.fillGiftCardData(giftCardNumber, giftCardValidationCode);
     const invoiceNumber = await cartPage.confirmPayment();
 

@@ -6,6 +6,7 @@ import { Product, ProductResponse } from '../src/models/product.model';
 import { customer } from '../src/data/users.data';
 import { prepareRandomAddress } from '../src/factories/address.factory';
 import { prepareRandomCard } from '../src/factories/card.factory';
+import { prepareRandomBankTransfer } from '../src/factories/bank-transfer.factory';
 
 let product: ProductResponse;
 let productInCart: Product;
@@ -57,6 +58,21 @@ test.describe('Logged in', () => {
     await cartPage.goToPaymentMethod(address);
     await cartPage.choosePaymentMethod(paymentMethod);
     await cartPage.fillCardData(card);
+    const invoiceNumber = await cartPage.confirmPayment();
+
+    await expect(cartPage.orderConfirmation).toHaveText(
+      `Thanks for your order! Your invoice number is ${invoiceNumber}.`,
+    );
+  });
+
+  test('can pay by bank transfer', async () => {
+    const address = prepareRandomAddress();
+    const bankTransfer = prepareRandomBankTransfer();
+    const paymentMethod = 'bank-transfer';
+
+    await cartPage.goToPaymentMethod(address);
+    await cartPage.choosePaymentMethod(paymentMethod);
+    await cartPage.fillBankTransferData(bankTransfer);
     const invoiceNumber = await cartPage.confirmPayment();
 
     await expect(cartPage.orderConfirmation).toHaveText(

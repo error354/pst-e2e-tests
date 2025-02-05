@@ -2,6 +2,7 @@ import { Locator, Page } from '@playwright/test';
 import { BasePage } from './base.page';
 import { Address } from '../models/address.model';
 import { Card } from '../models/card.model';
+import { BankTransfer } from '../models/bank-transfer.model';
 
 export class CartPage extends BasePage {
   constructor(protected page: Page) {
@@ -31,6 +32,13 @@ export class CartPage extends BasePage {
     expiryDateInput: this.page.getByTestId('expiration_date'),
     cvvInput: this.page.getByTestId('cvv'),
   };
+
+  bankTransferForm = {
+    bankNameInput: this.page.getByTestId('bank_name'),
+    accountNameInput: this.page.getByTestId('account_name'),
+    accountNumberInput: this.page.getByTestId('account_number'),
+  };
+
 
   async getProductQuantityInput(productName: string): Promise<Locator> {
     return this.page
@@ -97,5 +105,11 @@ export class CartPage extends BasePage {
     await this.cardForm.expiryDateInput.fill(card.expiryDate);
     await this.cardForm.cvvInput.fill(card.cvv);
     await this.cardForm.cardHolderNameInput.fill(card.holderName);
+  }
+
+  async fillBankTransferData(bankTransfer: BankTransfer) {
+    await this.bankTransferForm.bankNameInput.fill(bankTransfer.bankName);
+    await this.bankTransferForm.accountNameInput.fill(bankTransfer.accountName);
+    await this.bankTransferForm.accountNumberInput.fill(bankTransfer.accountNumber);
   }
 }

@@ -36,9 +36,6 @@ describe("Not logged in", () => {
 
   it("can log in and buy products", () => {
     const loginPage = new LoginPage();
-    const paymentMethod = "cash-on-delivery";
-    const address = prepareRandomAddress();
-    let invoiceNumber: string;
 
     cartPage.getGoToCheckoutButton1().click();
     loginPage.login(usersData.customer);
@@ -57,24 +54,6 @@ describe("Not logged in", () => {
       .should("have.prop", "value")
       .should("not.be.empty");
     cartPage.getGoToCheckoutButton3().should("be.disabled");
-
-    cartPage.addressForm.getStateInput().type(address.state);
-    cartPage.addressForm.getPostcodeInput().type(address.postalcode);
-    cartPage.getGoToCheckoutButton3().click();
-    cartPage.choosePaymentMethod(paymentMethod);
-    cy.intercept("**/invoices").as("invoiceResponse");
-    cartPage.getConfirmButton().click();
-    cartPage.getPaymentSuccessAlert().should("be.visible");
-    cartPage.getConfirmButton().click();
-    cy.wait("@invoiceResponse").then((response) => {
-      invoiceNumber = response.response.body.invoice_number;
-      cartPage
-        .getOrderConfirmation()
-        .should(
-          "have.text",
-          `Thanks for your order! Your invoice number is ${invoiceNumber}.`,
-        );
-    });
   });
 });
 
@@ -85,6 +64,21 @@ describe("Logged in", () => {
     loginPage.login(usersData.customer);
     initCart([productInCart]).then(() => {
       cartPage.visit();
+    });
+  });
+
+  it("can pay on delivery", () => {
+    const address = prepareRandomAddress();
+    const paymentMethod = "cash-on-delivery";
+
+    cartPage.goToPaymmentMethod(address, paymentMethod);
+    cartPage.confirmPayment().then((invoiceNumber) => {
+      cartPage
+        .getOrderConfirmation()
+        .should(
+          "have.text",
+          `Thanks for your order! Your invoice number is ${invoiceNumber}.`,
+        );
     });
   });
 
@@ -108,7 +102,7 @@ describe("Logged in", () => {
   it("can pay by bank transfer", () => {
     const address = prepareRandomAddress();
     const bankTransfer = prepareRandomBankTransfer();
-    const paymentMethod = 'bank-transfer';
+    const paymentMethod = "bank-transfer";
 
     cartPage.goToPaymmentMethod(address, paymentMethod);
     cartPage.fillBankTransferData(bankTransfer);
@@ -124,7 +118,7 @@ describe("Logged in", () => {
 
   it("can buy now pay later", () => {
     const address = prepareRandomAddress();
-    const paymentMethod = 'buy-now-pay-later';
+    const paymentMethod = "buy-now-pay-later";
     const installmentsNumber = 6;
 
     cartPage.goToPaymmentMethod(address, paymentMethod);
@@ -141,9 +135,9 @@ describe("Logged in", () => {
 
   it("can pay by gift card", () => {
     const address = prepareRandomAddress();
-    const paymentMethod = 'gift-card';
-    const giftCardNumber = '1234567890';
-    const giftCardValidationCode = '1234';
+    const paymentMethod = "gift-card";
+    const giftCardNumber = "1234567890";
+    const giftCardValidationCode = "1234";
 
     cartPage.goToPaymmentMethod(address, paymentMethod);
     cartPage.fillGiftCardData(giftCardNumber, giftCardValidationCode);

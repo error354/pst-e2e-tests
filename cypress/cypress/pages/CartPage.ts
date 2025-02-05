@@ -98,7 +98,9 @@ export class CartPage extends BasePage {
   };
 
   selectMonthlyInstallments = (installmentsNumber: number) => {
-    this.getMonthlyInstallmentsSelect().select(`${installmentsNumber} Monthly Installments`);
+    this.getMonthlyInstallmentsSelect().select(
+      `${installmentsNumber} Monthly Installments`,
+    );
   };
 
   fillGiftCardData = (number: string, validationCode: string) => {

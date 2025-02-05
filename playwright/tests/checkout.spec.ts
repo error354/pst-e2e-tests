@@ -25,31 +25,34 @@ test.beforeEach(async ({ cart }) => {
 });
 
 test.describe('Not logged in', () => {
-  test('can log in and buy products', async ({ loginPage }) => {
-    const paymentMethod = 'cash-on-delivery';
-    const address = prepareRandomAddress();
-
+  test('has to log in to proceed with checkout', async ({ loginPage }) => {
     await cartPage.proceed();
     await loginPage.login(customer);
+    await expect(cartPage.authMessage).toHaveText(
+      `Hello ${customer.name}, you are already logged in. You can proceed to checkout.`,
+    );
     await cartPage.proceed();
 
     await expect(cartPage.addressForm.streetInput).not.toBeEmpty();
     await expect(cartPage.goToCheckoutButton).toBeDisabled();
+  });
+});
 
-    await cartPage.addressForm.stateInput.fill(address.state);
-    await cartPage.addressForm.postcodeInput.fill(address.postalcode);
-    await cartPage.proceed();
-    await cartPage.choosePaymentMethod(paymentMethod);
+test.describe('Logged in', () => {
+  test.use({ storageState: '.auth\\customer.json' });
+
+  test('can pay on delivery', async () => {
+    const address = prepareRandomAddress();
+    const paymentMethod = 'cash-on-delivery';
+
+    await cartPage.goToPaymentMethod(address, paymentMethod);
     const invoiceNumber = await cartPage.confirmPayment();
 
     await expect(cartPage.orderConfirmation).toHaveText(
       `Thanks for your order! Your invoice number is ${invoiceNumber}.`,
     );
   });
-});
 
-test.describe('Logged in', () => {
-  test.use({ storageState: '.auth\\customer.json' });
   test('can pay by card', async () => {
     const address = prepareRandomAddress();
     const card = prepareRandomCard();

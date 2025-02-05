@@ -14,6 +14,8 @@ export class CartPage extends BasePage {
   goToCheckoutButton = this.page.getByRole('button', {
     name: 'Proceed to checkout',
   });
+  authMessage = this.page.locator('.login-container p');
+
   addressForm = {
     streetInput: this.page.getByTestId('address'),
     cityInput: this.page.getByTestId('city'),

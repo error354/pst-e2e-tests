@@ -5,6 +5,7 @@ import { prepareRandomAddress } from "../factories/address.factory";
 import { LoginPage } from "../pages/LoginPage";
 import { User } from "../models/user.model";
 import { prepareRandomCard } from "../factories/card.factory";
+import { prepareRandomBankTransfer } from "../factories/bank-transfer.factory";
 
 let usersData: Record<string, User>;
 let productInCart: Product;
@@ -94,6 +95,23 @@ describe("Logged in", () => {
 
     cartPage.goToPaymmentMethod(address, paymentMethod);
     cartPage.fillCardData(card);
+    cartPage.confirmPayment().then((invoiceNumber) => {
+      cartPage
+        .getOrderConfirmation()
+        .should(
+          "have.text",
+          `Thanks for your order! Your invoice number is ${invoiceNumber}.`,
+        );
+    });
+  });
+
+  it("can pay by bank transfer", () => {
+    const address = prepareRandomAddress();
+    const bankTransfer = prepareRandomBankTransfer();
+    const paymentMethod = 'bank-transfer';
+
+    cartPage.goToPaymmentMethod(address, paymentMethod);
+    cartPage.fillBankTransferData(bankTransfer);
     cartPage.confirmPayment().then((invoiceNumber) => {
       cartPage
         .getOrderConfirmation()

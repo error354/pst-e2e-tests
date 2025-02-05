@@ -7,24 +7,23 @@ import { customer } from '../src/data/users.data';
 import { prepareRandomAddress } from '../src/factories/address.factory';
 import { prepareRandomCard } from '../src/factories/card.factory';
 
-test.describe('Checkout', () => {
-  let product: ProductResponse;
-  let productInCart: Product;
-  let cartPage: CartPage;
+let product: ProductResponse;
+let productInCart: Product;
+let cartPage: CartPage;
 
-  test.beforeAll(async () => {
-    product = await getProductByName(products.boltCutters);
-    productInCart = {
-      id: product.id,
-      quantity: 2,
-    };
-  });
+test.beforeAll(async () => {
+  product = await getProductByName(products.boltCutters);
+  productInCart = {
+    id: product.id,
+    quantity: 2,
+  };
+});
 
-  test.beforeEach(async ({ cart }) => {
-    cartPage = (await cart([productInCart])).cartPage;
-  });
+test.beforeEach(async ({ cart }) => {
+  cartPage = (await cart([productInCart])).cartPage;
+});
 
-  test.use({ storageState: { cookies: [], origins: [] } });
+test.describe('Not logged in', () => {
   test('can log in and buy products', async ({ loginPage }) => {
     const paymentMethod = 'cash-on-delivery';
     const address = prepareRandomAddress();
@@ -46,9 +45,10 @@ test.describe('Checkout', () => {
       `Thanks for your order! Your invoice number is ${invoiceNumber}.`,
     );
   });
+});
 
+test.describe('Logged in', () => {
   test.use({ storageState: '.auth\\customer.json' });
-
   test('can pay by card', async () => {
     const address = prepareRandomAddress();
     const card = prepareRandomCard();

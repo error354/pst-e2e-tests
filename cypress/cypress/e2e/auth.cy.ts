@@ -4,16 +4,15 @@ import { AccountPage } from "../pages/AccountPage";
 import { LoginPage } from "../pages/LoginPage";
 import { RegisterPage } from "../pages/RegisterPage";
 
-describe("Login", () => {
-  let usersData: Record<string, User>;
-  const loginPage = new LoginPage();
-
-  before(() => {
-    cy.fixture("users.json").then((users) => {
-      usersData = users;
-    });
+let usersData: Record<string, User>;
+before(() => {
+  cy.fixture("users.json").then((users) => {
+    usersData = users;
   });
+});
 
+describe("Login", () => {  
+  const loginPage = new LoginPage();
   beforeEach(() => {
     loginPage.visit();
   });
@@ -98,14 +97,6 @@ describe("Register", () => {
 });
 
 describe("Logout", () => {
-  let usersData: Record<string, User>;
-
-  before(() => {
-    cy.fixture("users.json").then((users) => {
-      usersData = users;
-    });
-  });
-
   it("can log out", () => {
     const loginPage = new LoginPage();
     const accountPage = new AccountPage();

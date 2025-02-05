@@ -121,4 +121,39 @@ describe("Logged in", () => {
         );
     });
   });
+
+  it("can buy now pay later", () => {
+    const address = prepareRandomAddress();
+    const paymentMethod = 'buy-now-pay-later';
+    const installmentsNumber = 6;
+
+    cartPage.goToPaymmentMethod(address, paymentMethod);
+    cartPage.selectMonthlyInstallments(installmentsNumber);
+    cartPage.confirmPayment().then((invoiceNumber) => {
+      cartPage
+        .getOrderConfirmation()
+        .should(
+          "have.text",
+          `Thanks for your order! Your invoice number is ${invoiceNumber}.`,
+        );
+    });
+  });
+
+  it("can pay by gift card", () => {
+    const address = prepareRandomAddress();
+    const paymentMethod = 'gift-card';
+    const giftCardNumber = '1234567890';
+    const giftCardValidationCode = '1234';
+
+    cartPage.goToPaymmentMethod(address, paymentMethod);
+    cartPage.fillGiftCardData(giftCardNumber, giftCardValidationCode);
+    cartPage.confirmPayment().then((invoiceNumber) => {
+      cartPage
+        .getOrderConfirmation()
+        .should(
+          "have.text",
+          `Thanks for your order! Your invoice number is ${invoiceNumber}.`,
+        );
+    });
+  });
 });

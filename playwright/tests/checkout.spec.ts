@@ -79,4 +79,19 @@ test.describe('Logged in', () => {
       `Thanks for your order! Your invoice number is ${invoiceNumber}.`,
     );
   });
+
+  test('can buy now pay later', async () => {
+    const address = prepareRandomAddress();
+    const paymentMethod = 'buy-now-pay-later';
+    const installmentsNumber = 6;
+
+    await cartPage.goToPaymentMethod(address);
+    await cartPage.choosePaymentMethod(paymentMethod);
+    await cartPage.selectMonthlyInstallments(installmentsNumber);
+    const invoiceNumber = await cartPage.confirmPayment();
+
+    await expect(cartPage.orderConfirmation).toHaveText(
+      `Thanks for your order! Your invoice number is ${invoiceNumber}.`,
+    );
+  });
 });

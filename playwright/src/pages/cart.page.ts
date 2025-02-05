@@ -32,12 +32,12 @@ export class CartPage extends BasePage {
     expiryDateInput: this.page.getByTestId('expiration_date'),
     cvvInput: this.page.getByTestId('cvv'),
   };
-
   bankTransferForm = {
     bankNameInput: this.page.getByTestId('bank_name'),
     accountNameInput: this.page.getByTestId('account_name'),
     accountNumberInput: this.page.getByTestId('account_number'),
   };
+  monthlyInstallmentsSelect = this.page.getByTestId('monthly_installments');
 
 
   async getProductQuantityInput(productName: string): Promise<Locator> {
@@ -112,4 +112,9 @@ export class CartPage extends BasePage {
     await this.bankTransferForm.accountNameInput.fill(bankTransfer.accountName);
     await this.bankTransferForm.accountNumberInput.fill(bankTransfer.accountNumber);
   }
+
+  async selectMonthlyInstallments(installmentsNumber: number) {
+    await this.monthlyInstallmentsSelect.selectOption(installmentsNumber.toString());
+  }
+
 }

@@ -76,9 +76,7 @@ describe("Register", () => {
     registerPage
       .getFirstNameError()
       .should("contain", "First name is required");
-    registerPage
-      .getLastNameError()
-      .should("contain", "Last name is required");
+    registerPage.getLastNameError().should("contain", "Last name is required");
     registerPage
       .getDateOfBirthError()
       .should("contain", "Date of Birth is required");

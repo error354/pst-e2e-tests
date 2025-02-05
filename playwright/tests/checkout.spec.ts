@@ -94,4 +94,20 @@ test.describe('Logged in', () => {
       `Thanks for your order! Your invoice number is ${invoiceNumber}.`,
     );
   });
+
+  test('can pay by gift card', async () => {
+    const address = prepareRandomAddress();
+    const paymentMethod = 'gift-card';
+    const giftCardNumber = '1234567890';
+    const giftCardValidationCode = '1234';
+
+    await cartPage.goToPaymentMethod(address);
+    await cartPage.choosePaymentMethod(paymentMethod);
+    await cartPage.fillGiftCardData(giftCardNumber, giftCardValidationCode);
+    const invoiceNumber = await cartPage.confirmPayment();
+
+    await expect(cartPage.orderConfirmation).toHaveText(
+      `Thanks for your order! Your invoice number is ${invoiceNumber}.`,
+    );
+  });
 });

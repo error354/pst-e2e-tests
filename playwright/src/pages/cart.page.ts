@@ -38,7 +38,10 @@ export class CartPage extends BasePage {
     accountNumberInput: this.page.getByTestId('account_number'),
   };
   monthlyInstallmentsSelect = this.page.getByTestId('monthly_installments');
-
+  giftCardForm = {
+    cardNumberInput: this.page.getByTestId('gift_card_number'),
+    validationCodeInput: this.page.getByTestId('validation_code'),
+  };
 
   async getProductQuantityInput(productName: string): Promise<Locator> {
     return this.page
@@ -110,11 +113,19 @@ export class CartPage extends BasePage {
   async fillBankTransferData(bankTransfer: BankTransfer) {
     await this.bankTransferForm.bankNameInput.fill(bankTransfer.bankName);
     await this.bankTransferForm.accountNameInput.fill(bankTransfer.accountName);
-    await this.bankTransferForm.accountNumberInput.fill(bankTransfer.accountNumber);
+    await this.bankTransferForm.accountNumberInput.fill(
+      bankTransfer.accountNumber,
+    );
   }
 
   async selectMonthlyInstallments(installmentsNumber: number) {
-    await this.monthlyInstallmentsSelect.selectOption(installmentsNumber.toString());
+    await this.monthlyInstallmentsSelect.selectOption(
+      installmentsNumber.toString(),
+    );
   }
 
+  async fillGiftCardData(number: string, validationCode: string) {
+    await this.giftCardForm.cardNumberInput.fill(number);
+    await this.giftCardForm.validationCodeInput.fill(validationCode);
+  }
 }

@@ -11,7 +11,7 @@ before(() => {
   });
 });
 
-describe("Login", () => {  
+describe("Login", () => {
   const loginPage = new LoginPage();
   beforeEach(() => {
     loginPage.visit();

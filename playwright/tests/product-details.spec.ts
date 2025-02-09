@@ -20,13 +20,13 @@ test.describe('Product details', () => {
   }) => {
     await productDetailsPage.addToCart();
 
-    await expect(productDetailsPage.alert).toHaveText(
+    await expect(productDetailsPage.alert.message).toHaveText(
       'Product added to shopping cart.',
     );
 
-    await productDetailsPage.closeAlert();
+    await productDetailsPage.alert.close();
 
-    await expect(productDetailsPage.alert).toBeHidden({ timeout: 400 });
+    await expect(productDetailsPage.alert.message).toBeHidden({ timeout: 400 });
 
     await productDetailsPage.navbar.goToCart();
 
@@ -40,11 +40,11 @@ test.describe('Product details', () => {
     await productDetailsPage.changeQuantity('3');
     await productDetailsPage.addToCart();
 
-    await expect(productDetailsPage.alert).toHaveText(
+    await expect(productDetailsPage.alert.message).toHaveText(
       'Product added to shopping cart.',
     );
 
-    await productDetailsPage.closeAlert();
+    await productDetailsPage.alert.close();
     await productDetailsPage.navbar.goToCart();
 
     await expect(cartPage.totalPrice).toHaveText(`$${product.price * 3}`);
@@ -65,7 +65,7 @@ test.describe('Product details', () => {
     await expect(productDetailsPage.quantityInput).toHaveValue('2');
 
     await productDetailsPage.addToCart();
-    await productDetailsPage.closeAlert();
+    await productDetailsPage.alert.close();
     await productDetailsPage.navbar.goToCart();
 
     await expect(cartPage.totalPrice).toHaveText(

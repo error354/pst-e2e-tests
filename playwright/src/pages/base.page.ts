@@ -1,14 +1,15 @@
-import { Locator, Page } from '@playwright/test';
+import { Page } from '@playwright/test';
 import { NavbarComponent } from '../components/navbar.component';
+import { AlertComponent } from '../components/alert.component';
 
 export abstract class BasePage {
   readonly url: string;
-  readonly alert: Locator;
+  readonly alert: AlertComponent;
   readonly navbar: NavbarComponent;
 
   constructor(protected page: Page) {
-    this.alert = this.page.locator('#toast-container');
     this.navbar = new NavbarComponent(this.page);
+    this.alert = new AlertComponent(this.page);
   }
 
   async goto(id = ''): Promise<void> {
@@ -17,9 +18,5 @@ export abstract class BasePage {
 
   async getTitle(): Promise<string> {
     return this.page.title();
-  }
-
-  async closeAlert(): Promise<void> {
-    await this.alert.click();
   }
 }

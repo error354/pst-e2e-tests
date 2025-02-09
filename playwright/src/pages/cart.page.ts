@@ -6,7 +6,7 @@ import { BankTransfer } from '../models/bank-transfer.model';
 
 export class CartPage extends BasePage {
   url = '/checkout';
-  
+
   readonly totalPrice: Locator;
   readonly goToCheckoutButton: Locator;
   readonly authMessage: Locator;

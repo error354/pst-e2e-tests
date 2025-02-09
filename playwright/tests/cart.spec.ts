@@ -24,7 +24,9 @@ test.describe('Cart', () => {
   test('can change quantity in cart', async () => {
     await cartPage.changeQuantity(product.name, '3');
 
-    await expect(cartPage.alert).toHaveText('Product quantity updated.');
+    await expect(cartPage.alert.message).toHaveText(
+      'Product quantity updated.',
+    );
     await expect(cartPage.navbar.cartQuantity).toHaveText('3');
     await expect(cartPage.totalPrice).toHaveText(`$${product.price * 3}`);
   });
@@ -32,7 +34,7 @@ test.describe('Cart', () => {
   test('can delete product from cart', async () => {
     await cartPage.deleteProduct(product.name);
 
-    await expect(cartPage.alert).toHaveText('Product deleted.');
+    await expect(cartPage.alert.message).toHaveText('Product deleted.');
     await expect(cartPage.totalPrice).toHaveText(`$0.00`);
   });
 });

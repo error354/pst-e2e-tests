@@ -24,12 +24,12 @@ describe("products", () => {
 
   it("can add product to the cart", () => {
     productDetailsPage.getAddToCartButton().click();
-    productDetailsPage
-      .getAlert()
+    productDetailsPage.alert
+      .getMessage()
       .should("be.visible")
       .and("contain.text", "Product added to shopping cart");
-    productDetailsPage.closeAlert();
-    productDetailsPage.getAlert().should("not.exist");
+    productDetailsPage.alert.close();
+    productDetailsPage.alert.getMessage().should("not.exist");
     productDetailsPage.navbar.goToCart();
     cartPage.getTotalPrice().should("have.text", `$${product.price}`);
   });
@@ -39,12 +39,12 @@ describe("products", () => {
     productDetailsPage.getQuantityInput().type("3");
     productDetailsPage.getAddToCartButton().click();
 
-    productDetailsPage
-      .getAlert()
+    productDetailsPage.alert
+      .getMessage()
       .should("be.visible")
       .and("contain.text", "Product added to shopping cart");
 
-    productDetailsPage.closeAlert();
+    productDetailsPage.alert.close();
 
     productDetailsPage.navbar.getCartQuantity().should("have.text", "3");
 
@@ -56,11 +56,11 @@ describe("products", () => {
   it("can add many products to the cart", () => {
     productDetailsPage.addToCart();
 
-    productDetailsPage
-      .getAlert()
+    productDetailsPage.alert
+      .getMessage()
       .should("be.visible")
       .and("contain.text", "Product added to shopping cart");
-    productDetailsPage.closeAlert();
+    productDetailsPage.alert.close();
     productDetailsPage.navbar.getCartQuantity().should("have.text", "1");
     getProductByName(productNames.earProtection).then((product2) => {
       productDetailsPage.visit(product2.id);
@@ -69,7 +69,7 @@ describe("products", () => {
       productDetailsPage.getQuantityInput().should("have.value", "2");
 
       productDetailsPage.addToCart();
-      productDetailsPage.closeAlert();
+      productDetailsPage.alert.close();
 
       productDetailsPage.navbar.getCartQuantity().should("have.text", "3");
 

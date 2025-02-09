@@ -24,8 +24,8 @@ describe("products", () => {
       cartPage.visit();
       cartPage.changeQuantity(product.name, "3");
 
-      cartPage
-        .getAlert()
+      cartPage.alert
+        .getMessage()
         .should("be.visible")
         .and("contain.text", "Product quantity updated");
       cartPage.navbar.getCartQuantity().should("have.text", "3");
@@ -37,8 +37,8 @@ describe("products", () => {
     initCart([productInCart]).then(() => {
       cartPage.visit();
       cartPage.deleteProduct(product.name);
-      cartPage
-        .getAlert()
+      cartPage.alert
+        .getMessage()
         .should("be.visible")
         .and("contain.text", "Product deleted");
       cartPage.getTotalPrice().should("have.text", `$0.00`);

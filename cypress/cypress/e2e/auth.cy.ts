@@ -103,7 +103,7 @@ describe("Logout", () => {
 
     loginPage.visit();
     loginPage.login(usersData.customer);
-    accountPage.logOut();
+    accountPage.navbar.logOut();
 
     cy.url().should("contain", "auth/login");
   });

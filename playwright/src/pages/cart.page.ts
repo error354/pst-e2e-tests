@@ -5,45 +5,57 @@ import { Card } from '../models/card.model';
 import { BankTransfer } from '../models/bank-transfer.model';
 
 export class CartPage extends BasePage {
-  constructor(protected page: Page) {
+  readonly totalPrice: Locator;
+  readonly goToCheckoutButton: Locator;
+  readonly authMessage: Locator;
+  readonly addressForm: Record<string, Locator>;
+  readonly paymentMethodSelect: Locator;
+  readonly confirmButton: Locator;
+  readonly paymentSuccessAlert: Locator;
+  readonly orderConfirmation: Locator;
+  readonly cardForm: Record<string, Locator>;
+  readonly bankTransferForm: Record<string, Locator>;
+  readonly monthlyInstallmentsSelect: Locator;
+  readonly giftCardForm: Record<string, Locator>;
+
+
+  constructor(page: Page) {
     super(page);
+    this.totalPrice = this.page.getByTestId('cart-total');
+    this.goToCheckoutButton = this.page.getByRole('button', {
+      name: 'Proceed to checkout',
+    });
+    this.authMessage = this.page.locator('.login-container p');
+    this.addressForm = {
+      streetInput: this.page.getByTestId('address'),
+      cityInput: this.page.getByTestId('city'),
+      stateInput: this.page.getByTestId('state'),
+      country: this.page.getByTestId('country'),
+      postcodeInput: this.page.getByTestId('postcode'),
+    };
+    this.paymentMethodSelect = this.page.getByTestId('payment-method');
+    this.confirmButton = this.page.getByTestId('finish');
+    this.paymentSuccessAlert = this.page.getByText('Payment was successful');
+    this.orderConfirmation = this.page.locator('#order-confirmation');
+    this.cardForm = {
+      cardNumberInput: this.page.getByTestId('credit_card_number'),
+      cardHolderNameInput: this.page.getByTestId('card_holder_name'),
+      expiryDateInput: this.page.getByTestId('expiration_date'),
+      cvvInput: this.page.getByTestId('cvv'),
+    };
+    this.bankTransferForm = {
+      bankNameInput: this.page.getByTestId('bank_name'),
+      accountNameInput: this.page.getByTestId('account_name'),
+      accountNumberInput: this.page.getByTestId('account_number'),
+    };
+    this.monthlyInstallmentsSelect = this.page.getByTestId('monthly_installments');
+    this.giftCardForm = {
+      cardNumberInput: this.page.getByTestId('gift_card_number'),
+      validationCodeInput: this.page.getByTestId('validation_code'),
+    };
   }
 
   url = '/checkout';
-  totalPrice = this.page.getByTestId('cart-total');
-  goToCheckoutButton = this.page.getByRole('button', {
-    name: 'Proceed to checkout',
-  });
-  authMessage = this.page.locator('.login-container p');
-
-  addressForm = {
-    streetInput: this.page.getByTestId('address'),
-    cityInput: this.page.getByTestId('city'),
-    stateInput: this.page.getByTestId('state'),
-    country: this.page.getByTestId('country'),
-    postcodeInput: this.page.getByTestId('postcode'),
-  };
-  paymentMethodSelect = this.page.getByTestId('payment-method');
-  confirmButton = this.page.getByTestId('finish');
-  paymentSuccessAlert = this.page.getByText('Payment was successful');
-  orderConfirmation = this.page.locator('#order-confirmation');
-
-  cardForm = {
-    cardNumberInput: this.page.getByTestId('credit_card_number'),
-    cardHolderNameInput: this.page.getByTestId('card_holder_name'),
-    expiryDateInput: this.page.getByTestId('expiration_date'),
-    cvvInput: this.page.getByTestId('cvv'),
-  };
-  bankTransferForm = {
-    bankNameInput: this.page.getByTestId('bank_name'),
-    accountNameInput: this.page.getByTestId('account_name'),
-    accountNumberInput: this.page.getByTestId('account_number'),
-  };
-  monthlyInstallmentsSelect = this.page.getByTestId('monthly_installments');
-  giftCardForm = {
-    cardNumberInput: this.page.getByTestId('gift_card_number'),
-    validationCodeInput: this.page.getByTestId('validation_code'),
-  };
 
   async getProductQuantityInput(productName: string): Promise<Locator> {
     return this.page
@@ -65,8 +77,7 @@ export class CartPage extends BasePage {
 
   async changeQuantity(productName: string, newQuantity: string) {
     const quantityInput = await this.getProductQuantityInput(productName);
-    await quantityInput.clear();
-    await quantityInput.type(newQuantity);
+    await quantityInput.fill(newQuantity);
     await quantityInput.evaluate((e) => e.blur());
   }
 

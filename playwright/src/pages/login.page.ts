@@ -1,16 +1,20 @@
-import { Page } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 import { BasePage } from './base.page';
 import { User } from '../models/user.model';
 
 export class LoginPage extends BasePage {
   url = '/auth/login';
-  emailInput = this.page.getByTestId('email');
-  passwordInput = this.page.getByTestId('password');
-  loginButton = this.page.getByTestId('login-submit');
-  errorMessage = this.page.getByTestId('login-error');
+  readonly emailInput: Locator
+  readonly passwordInput: Locator;
+  readonly loginButton: Locator;
+  readonly errorMessage: Locator;
 
-  constructor(protected page: Page) {
+  constructor(page: Page) {
     super(page);
+    this.emailInput = this.page.getByTestId('email');
+    this.passwordInput = this.page.getByTestId('password');
+    this.loginButton = this.page.getByTestId('login-submit');
+    this.errorMessage = this.page.getByTestId('login-error');
   }
 
   async login(user: User) {

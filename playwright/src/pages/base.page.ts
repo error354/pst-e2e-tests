@@ -1,21 +1,34 @@
-import { Page } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
+
+type Navbar = {
+  cart: Locator;
+  cartQuantity: Locator;
+  goToCart(): Promise<void>;
+  userMenu: Locator;
+  userMenuItems: {
+    logOut: Locator;
+  };
+};
 
 export abstract class BasePage {
-  url: string;
-  alert = this.page.locator('#toast-container');
-  navbar = {
-    cart: this.page.getByTestId('nav-cart'),
-    cartQuantity: this.page.getByTestId('cart-quantity'),
-    goToCart: async () => {
-      await this.navbar.cart.click();
-    },
-    userMenu: this.page.getByTestId('nav-menu'),
-    userMenuItems: {
-      logOut: this.page.getByTestId('nav-sign-out'),
-    },
-  };
+  readonly url: string;
+  readonly alert: Locator;
+  readonly navbar: Navbar  
 
-  constructor(protected page: Page) {}
+  constructor(protected page: Page) {
+    this.alert = this.page.locator('#toast-container');
+    this.navbar = {
+      cart: this.page.getByTestId('nav-cart'),
+      cartQuantity: this.page.getByTestId('cart-quantity'),
+      goToCart: async () => {
+        await this.navbar.cart.click();
+      },
+      userMenu: this.page.getByTestId('nav-menu'),
+      userMenuItems: {
+        logOut: this.page.getByTestId('nav-sign-out'),
+      },
+    };
+  }
 
   async goto(id = ''): Promise<void> {
     await this.page.goto(`${this.url}${id}`);

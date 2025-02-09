@@ -1,5 +1,6 @@
 import { Locator, Page } from '@playwright/test';
 import { BasePage } from './base.page';
+import { ProductDetailsPage } from './product-details.page';
 
 export class HomePage extends BasePage {
   url = '/';
@@ -12,7 +13,9 @@ export class HomePage extends BasePage {
     return this.page.getByTestId('product-name').filter({ hasText: name });
   }
 
-  async goToProduct(name: string): Promise<void> {
-    return (await this.getProductCard(name)).click();
+  async goToProduct(name: string): Promise<ProductDetailsPage> {
+    const productCard = await this.getProductCard(name);
+    await productCard.click();
+    return new ProductDetailsPage(this.page);
   }
 }

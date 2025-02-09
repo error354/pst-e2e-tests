@@ -9,15 +9,14 @@ interface CartContext {
 }
 
 interface CartFixtures {
-  cart: (products?: Product[]) => Promise<CartContext>;
+  createCart: (products?: Product[]) => Promise<CartContext>;
 }
 
 export const cartTest = pageObjectTest.extend<CartFixtures>({
-  cart: async ({ page, cartPage }, use) => {
+  createCart: async ({ page, cartPage }, use) => {
     const init = async (products?: Product[]): Promise<CartContext> => {
       const finalProducts = products ?? [];
       const cartId = await initCart(finalProducts);
-      await cartPage.goto();
       await page.evaluate((cartId) => {
         sessionStorage.setItem('cart_id', cartId);
       }, cartId);

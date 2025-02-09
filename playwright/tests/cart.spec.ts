@@ -1,40 +1,43 @@
 import { expect, test } from '../src/fixtures/merge.fixture';
-import { products } from '../src/data/products.data';
-import { getProductByName } from '../src/utils/products';
-import { CartPage } from '../src/pages/cart.page';
-import { Product, ProductResponse } from '../src/models/product.model';
+import { Product } from '../src/models/product.model';
 
 test.describe('Cart', () => {
-  let product: ProductResponse;
   let productInCart: Product;
-  let cartPage: CartPage;
 
-  test.beforeAll(async () => {
-    product = await getProductByName(products.boltCutters);
+  test.beforeAll(async ({ product }) => {
     productInCart = {
       id: product.id,
       quantity: 2,
     };
   });
 
-  test.beforeEach(async ({ cart }) => {
-    cartPage = (await cart([productInCart])).cartPage;
+  test.beforeEach(async ({ createCart }) => {
+    await createCart([productInCart]);
   });
 
-  test('can change quantity in cart', async () => {
+  test('can change quantity in cart', async ({
+    cartPage,
+    product,
+    alertComponent,
+    navbarComponent,
+  }) => {
     await cartPage.changeQuantity(product.name, '3');
 
-    await expect(cartPage.alert.message).toHaveText(
+    await expect(alertComponent.message).toHaveText(
       'Product quantity updated.',
     );
-    await expect(cartPage.navbar.cartQuantity).toHaveText('3');
+    await expect(navbarComponent.cartQuantity).toHaveText('3');
     await expect(cartPage.totalPrice).toHaveText(`$${product.price * 3}`);
   });
 
-  test('can delete product from cart', async () => {
+  test('can delete product from cart', async ({
+    cartPage,
+    product,
+    alertComponent,
+  }) => {
     await cartPage.deleteProduct(product.name);
 
-    await expect(cartPage.alert.message).toHaveText('Product deleted.');
+    await expect(alertComponent.message).toHaveText('Product deleted.');
     await expect(cartPage.totalPrice).toHaveText(`$0.00`);
   });
 });

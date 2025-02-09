@@ -1,51 +1,44 @@
-import { expect, test } from '../src/fixtures/merge.fixture';
 import { products } from '../src/data/products.data';
+import { expect, test } from '../src/fixtures/merge.fixture';
 import { getProductByName } from '../src/utils/products';
-import { ProductResponse } from '../src/models/product.model';
 
 test.describe('Product details', () => {
-  let product: ProductResponse;
-
-  test.beforeAll(async () => {
-    product = await getProductByName(products.boltCutters);
-  });
-
-  test.beforeEach(async ({ productDetailsPage }) => {
-    await productDetailsPage.goto(product.id);
-  });
-
   test('can add product to the cart', async ({
     productDetailsPage,
-    cartPage,
+    product,
+    alertComponent,
+    navbarComponent,
   }) => {
     await productDetailsPage.addToCart();
 
-    await expect(productDetailsPage.alert.message).toHaveText(
+    await expect(alertComponent.message).toHaveText(
       'Product added to shopping cart.',
     );
 
-    await productDetailsPage.alert.close();
+    await alertComponent.close();
 
-    await expect(productDetailsPage.alert.message).toBeHidden({ timeout: 400 });
+    await expect(alertComponent.message).toBeHidden({ timeout: 400 });
 
-    await productDetailsPage.navbar.goToCart();
+    const cartPage = await navbarComponent.goToCart();
 
     await expect(cartPage.totalPrice).toHaveText(`$${product.price}`);
   });
 
   test('can add many copies of product to the cart', async ({
     productDetailsPage,
-    cartPage,
+    product,
+    alertComponent,
+    navbarComponent,
   }) => {
     await productDetailsPage.changeQuantity('3');
     await productDetailsPage.addToCart();
 
-    await expect(productDetailsPage.alert.message).toHaveText(
+    await expect(alertComponent.message).toHaveText(
       'Product added to shopping cart.',
     );
 
-    await productDetailsPage.alert.close();
-    await productDetailsPage.navbar.goToCart();
+    await alertComponent.close();
+    const cartPage = await navbarComponent.goToCart();
 
     await expect(cartPage.totalPrice).toHaveText(`$${product.price * 3}`);
   });
@@ -53,7 +46,9 @@ test.describe('Product details', () => {
   test('can add many products to the cart', async ({
     page,
     productDetailsPage,
-    cartPage,
+    product,
+    alertComponent,
+    navbarComponent,
   }) => {
     const product2 = await getProductByName(products.earProtection);
 
@@ -65,8 +60,8 @@ test.describe('Product details', () => {
     await expect(productDetailsPage.quantityInput).toHaveValue('2');
 
     await productDetailsPage.addToCart();
-    await productDetailsPage.alert.close();
-    await productDetailsPage.navbar.goToCart();
+    await alertComponent.close();
+    const cartPage = await navbarComponent.goToCart();
 
     await expect(cartPage.totalPrice).toHaveText(
       `$${product.price + product2.price * 2}`,

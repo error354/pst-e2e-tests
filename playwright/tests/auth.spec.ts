@@ -3,10 +3,6 @@ import { customer, invalid } from '../src/data/users.data';
 import { prepareRandomAccount } from '../src/factories/user.factory';
 
 test.describe('Login', () => {
-  test.beforeEach(async ({ loginPage }) => {
-    await loginPage.goto();
-  });
-
   test('can not log in with invalid credentials', async ({
     page,
     loginPage,
@@ -25,22 +21,18 @@ test.describe('Login', () => {
   test('can log in with valid credentials', async ({
     page,
     loginPage,
-    accountPage,
+    navbarComponent,
   }) => {
     await loginPage.login(customer);
 
     await expect(page).toHaveURL(/\/account/);
-    await expect(accountPage.navbar.userMenu).toContainText(
+    await expect(navbarComponent.userMenu).toContainText(
       customer.name as string,
     );
   });
 });
 
 test.describe('Register', () => {
-  test.beforeEach(async ({ registerPage }) => {
-    await registerPage.goto();
-  });
-
   test('can register a new account', async ({ page, registerPage }) => {
     const accountData = prepareRandomAccount();
 
@@ -104,9 +96,9 @@ test.describe('Register', () => {
 
 test.describe('Logout', () => {
   test.use({ storageState: '.auth\\customer.json' });
-  test('can log out', async ({ page, accountPage }) => {
-    await accountPage.goto();
-    await accountPage.navbar.logOut();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  test('can log out', async ({ page, navbarComponent, loginPage }) => {
+    await navbarComponent.logOut();
 
     await expect(page).toHaveURL(/\/auth\/login/);
   });

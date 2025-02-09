@@ -1,33 +1,32 @@
 import { expect, test } from '../src/fixtures/merge.fixture';
-import { products } from '../src/data/products.data';
-import { getProductByName } from '../src/utils/products';
 import { CartPage } from '../src/pages/cart.page';
-import { Product, ProductResponse } from '../src/models/product.model';
+import { Product } from '../src/models/product.model';
 import { customer } from '../src/data/users.data';
 import { prepareRandomAddress } from '../src/factories/address.factory';
 import { prepareRandomCard } from '../src/factories/card.factory';
 import { prepareRandomBankTransfer } from '../src/factories/bank-transfer.factory';
+import { LoginPage } from '../src/pages/login.page';
 
-let product: ProductResponse;
 let productInCart: Product;
 let cartPage: CartPage;
 
-test.beforeAll(async () => {
-  product = await getProductByName(products.boltCutters);
+test.beforeAll(async ({ product }) => {
   productInCart = {
     id: product.id,
     quantity: 2,
   };
 });
 
-test.beforeEach(async ({ cart }) => {
-  cartPage = (await cart([productInCart])).cartPage;
+test.beforeEach(async ({ createCart }) => {
+  cartPage = (await createCart([productInCart])).cartPage;
 });
 
 test.describe('Not logged in', () => {
-  test('has to log in to proceed with checkout', async ({ loginPage }) => {
-    await cartPage.proceed();
-    await loginPage.login(customer);
+  test('has to log in to proceed with checkout', async ({ page }) => {
+    
+    cartPage.proceed();
+    const loginPage = new LoginPage(page);
+    loginPage.login(customer);
     await expect(cartPage.authMessage).toHaveText(
       `Hello ${customer.name}, you are already logged in. You can proceed to checkout.`,
     );

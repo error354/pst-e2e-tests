@@ -3,15 +3,10 @@ import { products } from '../src/data/products.data';
 import { getProductByName } from '../src/utils/products';
 
 test.describe('Product list', () => {
-  test('can go to product details page', async ({
-    page,
-    homePage,
-    productDetailsPage,
-  }) => {
+  test('can go to product details page', async ({ page, homePage }) => {
     const product = await getProductByName(products.boltCutters);
 
-    await homePage.goto();
-    await homePage.goToProduct(products.boltCutters);
+    const productDetailsPage = await homePage.goToProduct(products.boltCutters);
 
     await expect(productDetailsPage.productName).toHaveText(
       products.boltCutters,

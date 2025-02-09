@@ -1,4 +1,6 @@
 import { Locator, Page } from '@playwright/test';
+import { CartPage } from '../pages/cart.page';
+import { LoginPage } from '../pages/login.page';
 
 export class NavbarComponent {
   readonly cart: Locator;
@@ -15,12 +17,14 @@ export class NavbarComponent {
     };
   }
 
-  async goToCart(): Promise<void> {
+  async goToCart(): Promise<CartPage> {
     await this.cart.click();
+    return new CartPage(this.page);
   }
 
-  async logOut(): Promise<void> {
+  async logOut(): Promise<LoginPage> {
     await this.userMenu.click();
     await this.userMenuItems.logOut.click();
+    return new LoginPage(this.page);
   }
 }

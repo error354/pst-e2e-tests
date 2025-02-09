@@ -72,21 +72,25 @@ export class CartPage extends BasePage {
       .locator('.btn-danger');
   }
 
-  async deleteProduct(productName: string) {
-    return (await this.getDeleteProductButton(productName)).click();
+  async deleteProduct(productName: string): Promise<void> {
+    const deleteButton = await this.getDeleteProductButton(productName);
+    deleteButton.click();
   }
 
-  async changeQuantity(productName: string, newQuantity: string) {
+  async changeQuantity(
+    productName: string,
+    newQuantity: string,
+  ): Promise<void> {
     const quantityInput = await this.getProductQuantityInput(productName);
     await quantityInput.fill(newQuantity);
     await quantityInput.evaluate((e) => e.blur());
   }
 
-  async proceed() {
-    return this.goToCheckoutButton.click();
+  async proceed(): Promise<void> {
+    this.goToCheckoutButton.click();
   }
 
-  async choosePaymentMethod(paymentMethod: string) {
+  async choosePaymentMethod(paymentMethod: string): Promise<void> {
     await this.paymentMethodSelect.selectOption(paymentMethod);
   }
 
@@ -105,7 +109,10 @@ export class CartPage extends BasePage {
     return invoiceNumber;
   }
 
-  async goToPaymentMethod(address: Address, paymentMethod: string) {
+  async goToPaymentMethod(
+    address: Address,
+    paymentMethod: string,
+  ): Promise<void> {
     await this.proceed();
     await this.proceed();
     await this.page.waitForLoadState('networkidle');
@@ -117,14 +124,14 @@ export class CartPage extends BasePage {
     await this.choosePaymentMethod(paymentMethod);
   }
 
-  async fillCardData(card: Card) {
+  async fillCardData(card: Card): Promise<void> {
     await this.cardForm.cardNumberInput.fill(card.cardNumber);
     await this.cardForm.expiryDateInput.fill(card.expiryDate);
     await this.cardForm.cvvInput.fill(card.cvv);
     await this.cardForm.cardHolderNameInput.fill(card.holderName);
   }
 
-  async fillBankTransferData(bankTransfer: BankTransfer) {
+  async fillBankTransferData(bankTransfer: BankTransfer): Promise<void> {
     await this.bankTransferForm.bankNameInput.fill(bankTransfer.bankName);
     await this.bankTransferForm.accountNameInput.fill(bankTransfer.accountName);
     await this.bankTransferForm.accountNumberInput.fill(
@@ -132,13 +139,16 @@ export class CartPage extends BasePage {
     );
   }
 
-  async selectMonthlyInstallments(installmentsNumber: number) {
+  async selectMonthlyInstallments(installmentsNumber: number): Promise<void> {
     await this.monthlyInstallmentsSelect.selectOption(
       installmentsNumber.toString(),
     );
   }
 
-  async fillGiftCardData(number: string, validationCode: string) {
+  async fillGiftCardData(
+    number: string,
+    validationCode: string,
+  ): Promise<void> {
     await this.giftCardForm.cardNumberInput.fill(number);
     await this.giftCardForm.validationCodeInput.fill(validationCode);
   }

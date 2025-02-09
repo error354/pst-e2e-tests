@@ -45,7 +45,7 @@ export class RegisterPage extends BasePage {
     this.phoneInput = this.page.getByTestId('phone');
     this.emailInput = this.page.getByTestId('email');
     this.passwordInput = this.page.getByTestId('password');
-  
+
     this.firstNameError = this.page.getByTestId('first-name-error');
     this.lastNameError = this.page.getByTestId('last-name-error');
     this.dateOfBirthError = this.page.getByTestId('dob-error');
@@ -57,7 +57,7 @@ export class RegisterPage extends BasePage {
     this.phoneError = this.page.getByTestId('phone-error');
     this.emailError = this.page.getByTestId('email-error');
     this.passwordError = this.page.getByTestId('password-error');
-  
+
     this.registerButton = this.page.getByTestId('register-submit');
   }
 

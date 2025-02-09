@@ -5,6 +5,8 @@ import { Card } from '../models/card.model';
 import { BankTransfer } from '../models/bank-transfer.model';
 
 export class CartPage extends BasePage {
+  url = '/checkout';
+  
   readonly totalPrice: Locator;
   readonly goToCheckoutButton: Locator;
   readonly authMessage: Locator;
@@ -17,7 +19,6 @@ export class CartPage extends BasePage {
   readonly bankTransferForm: Record<string, Locator>;
   readonly monthlyInstallmentsSelect: Locator;
   readonly giftCardForm: Record<string, Locator>;
-
 
   constructor(page: Page) {
     super(page);
@@ -48,14 +49,14 @@ export class CartPage extends BasePage {
       accountNameInput: this.page.getByTestId('account_name'),
       accountNumberInput: this.page.getByTestId('account_number'),
     };
-    this.monthlyInstallmentsSelect = this.page.getByTestId('monthly_installments');
+    this.monthlyInstallmentsSelect = this.page.getByTestId(
+      'monthly_installments',
+    );
     this.giftCardForm = {
       cardNumberInput: this.page.getByTestId('gift_card_number'),
       validationCodeInput: this.page.getByTestId('validation_code'),
     };
   }
-
-  url = '/checkout';
 
   async getProductQuantityInput(productName: string): Promise<Locator> {
     return this.page

@@ -4,7 +4,7 @@ import { User } from '../models/user.model';
 
 export class LoginPage extends BasePage {
   url = '/auth/login';
-  readonly emailInput: Locator
+  readonly emailInput: Locator;
   readonly passwordInput: Locator;
   readonly loginButton: Locator;
   readonly errorMessage: Locator;

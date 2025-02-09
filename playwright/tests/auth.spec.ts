@@ -106,7 +106,7 @@ test.describe('Logout', () => {
   test.use({ storageState: '.auth\\customer.json' });
   test('can log out', async ({ page, accountPage }) => {
     await accountPage.goto();
-    await accountPage.logOut();
+    await accountPage.navbar.logOut();
 
     await expect(page).toHaveURL(/\/auth\/login/);
   });

@@ -5,7 +5,7 @@ export function prepareRandomAddress(): Address {
   const address: Address = {
     street: faker.location.streetAddress(true),
     city: faker.location.city(),
-    country: faker.location.country(),
+    country: faker.location.country().slice(0, 40),
     state: faker.location.state(),
     postalcode: faker.location.zipCode(),
   };

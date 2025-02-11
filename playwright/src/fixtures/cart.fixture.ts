@@ -1,10 +1,10 @@
 import { Product } from '../models/product.model';
-import { CartPage } from '../pages/cart.page';
+import { CheckoutCartPage } from '../pages/checkout-cart.page';
 import { initCart } from '../utils/products';
 import { pageObjectTest } from './page-object.fixture';
 
 interface CartContext {
-  cartPage: CartPage;
+  checkoutCartPage: CheckoutCartPage;
   cartId: string;
 }
 
@@ -13,7 +13,7 @@ interface CartFixtures {
 }
 
 export const cartTest = pageObjectTest.extend<CartFixtures>({
-  createCart: async ({ page, cartPage }, use) => {
+  createCart: async ({ page, checkoutCartPage }, use) => {
     const init = async (products?: Product[]): Promise<CartContext> => {
       const finalProducts = products ?? [];
       const cartId = await initCart(finalProducts);
@@ -22,7 +22,7 @@ export const cartTest = pageObjectTest.extend<CartFixtures>({
       }, cartId);
       await page.reload();
 
-      return { cartPage, cartId };
+      return { checkoutCartPage, cartId };
     };
     await use(init);
   },

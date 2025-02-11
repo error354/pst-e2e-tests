@@ -19,9 +19,9 @@ test.describe('Product details', () => {
 
     await expect(alertComponent.message).toBeHidden({ timeout: 400 });
 
-    const cartPage = await navbarComponent.goToCart();
+    const checkoutCartPage = await navbarComponent.goToCheckout();
 
-    await expect(cartPage.totalPrice).toHaveText(`$${product.price}`);
+    await expect(checkoutCartPage.totalPrice).toHaveText(`$${product.price}`);
   });
 
   test('can add many copies of product to the cart', async ({
@@ -38,9 +38,11 @@ test.describe('Product details', () => {
     );
 
     await alertComponent.close();
-    const cartPage = await navbarComponent.goToCart();
+    const checkoutCartPage = await navbarComponent.goToCheckout();
 
-    await expect(cartPage.totalPrice).toHaveText(`$${product.price * 3}`);
+    await expect(checkoutCartPage.totalPrice).toHaveText(
+      `$${product.price * 3}`,
+    );
   });
 
   test('can add many products to the cart', async ({
@@ -61,9 +63,9 @@ test.describe('Product details', () => {
 
     await productDetailsPage.addToCart();
     await alertComponent.close();
-    const cartPage = await navbarComponent.goToCart();
+    const checkoutCartPage = await navbarComponent.goToCheckout();
 
-    await expect(cartPage.totalPrice).toHaveText(
+    await expect(checkoutCartPage.totalPrice).toHaveText(
       `$${product.price + product2.price * 2}`,
     );
   });

@@ -1,39 +1,23 @@
 import { Locator, Page } from '@playwright/test';
 import { BasePage } from './base.page';
-import { Address } from '../models/address.model';
 import { Card } from '../models/card.model';
 import { BankTransfer } from '../models/bank-transfer.model';
+import { LocatorsRecord } from '../models/locators-record.model';
 
-export class CartPage extends BasePage {
+export class CheckoutPaymentPage extends BasePage {
   url = '/checkout';
 
-  readonly totalPrice: Locator;
-  readonly goToCheckoutButton: Locator;
-  readonly authMessage: Locator;
-  readonly addressForm: Record<string, Locator>;
   readonly paymentMethodSelect: Locator;
   readonly confirmButton: Locator;
   readonly paymentSuccessAlert: Locator;
   readonly orderConfirmation: Locator;
-  readonly cardForm: Record<string, Locator>;
-  readonly bankTransferForm: Record<string, Locator>;
+  readonly cardForm: LocatorsRecord;
+  readonly bankTransferForm: LocatorsRecord;
   readonly monthlyInstallmentsSelect: Locator;
-  readonly giftCardForm: Record<string, Locator>;
+  readonly giftCardForm: LocatorsRecord;
 
   constructor(page: Page) {
     super(page);
-    this.totalPrice = this.page.getByTestId('cart-total');
-    this.goToCheckoutButton = this.page.getByRole('button', {
-      name: 'Proceed to checkout',
-    });
-    this.authMessage = this.page.locator('.login-container p');
-    this.addressForm = {
-      streetInput: this.page.getByTestId('address'),
-      cityInput: this.page.getByTestId('city'),
-      stateInput: this.page.getByTestId('state'),
-      country: this.page.getByTestId('country'),
-      postcodeInput: this.page.getByTestId('postcode'),
-    };
     this.paymentMethodSelect = this.page.getByTestId('payment-method');
     this.confirmButton = this.page.getByTestId('finish');
     this.paymentSuccessAlert = this.page.getByText('Payment was successful');
@@ -58,38 +42,6 @@ export class CartPage extends BasePage {
     };
   }
 
-  async getProductQuantityInput(productName: string): Promise<Locator> {
-    return this.page
-      .getByRole('row')
-      .filter({ hasText: productName })
-      .getByTestId('product-quantity');
-  }
-
-  async getDeleteProductButton(productName: string): Promise<Locator> {
-    return this.page
-      .getByRole('row')
-      .filter({ hasText: productName })
-      .locator('.btn-danger');
-  }
-
-  async deleteProduct(productName: string): Promise<void> {
-    const deleteButton = await this.getDeleteProductButton(productName);
-    deleteButton.click();
-  }
-
-  async changeQuantity(
-    productName: string,
-    newQuantity: string,
-  ): Promise<void> {
-    const quantityInput = await this.getProductQuantityInput(productName);
-    await quantityInput.fill(newQuantity);
-    await quantityInput.evaluate((e) => e.blur());
-  }
-
-  async proceed(): Promise<void> {
-    this.goToCheckoutButton.click();
-  }
-
   async choosePaymentMethod(paymentMethod: string): Promise<void> {
     await this.paymentMethodSelect.selectOption(paymentMethod);
   }
@@ -107,21 +59,6 @@ export class CartPage extends BasePage {
     const responseData = await response.json();
     const invoiceNumber = responseData.invoice_number;
     return invoiceNumber;
-  }
-
-  async goToPaymentMethod(
-    address: Address,
-    paymentMethod: string,
-  ): Promise<void> {
-    await this.proceed();
-    await this.proceed();
-    await this.page.waitForLoadState('networkidle');
-    await this.addressForm.streetInput.fill(address.street);
-    await this.addressForm.cityInput.fill(address.city);
-    await this.addressForm.stateInput.fill(address.state);
-    await this.addressForm.postcodeInput.fill(address.postalcode);
-    await this.proceed();
-    await this.choosePaymentMethod(paymentMethod);
   }
 
   async fillCardData(card: Card): Promise<void> {

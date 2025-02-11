@@ -16,28 +16,30 @@ test.describe('Cart', () => {
   });
 
   test('can change quantity in cart', async ({
-    cartPage,
+    checkoutCartPage,
     product,
     alertComponent,
     navbarComponent,
   }) => {
-    await cartPage.changeQuantity(product.name, '3');
+    await checkoutCartPage.changeQuantity(product.name, '3');
 
     await expect(alertComponent.message).toHaveText(
       'Product quantity updated.',
     );
     await expect(navbarComponent.cartQuantity).toHaveText('3');
-    await expect(cartPage.totalPrice).toHaveText(`$${product.price * 3}`);
+    await expect(checkoutCartPage.totalPrice).toHaveText(
+      `$${product.price * 3}`,
+    );
   });
 
   test('can delete product from cart', async ({
-    cartPage,
+    checkoutCartPage,
     product,
     alertComponent,
   }) => {
-    await cartPage.deleteProduct(product.name);
+    await checkoutCartPage.deleteProduct(product.name);
 
     await expect(alertComponent.message).toHaveText('Product deleted.');
-    await expect(cartPage.totalPrice).toHaveText(`$0.00`);
+    await expect(checkoutCartPage.totalPrice).toHaveText(`$0.00`);
   });
 });

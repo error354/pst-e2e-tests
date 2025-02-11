@@ -4,13 +4,12 @@ import { ProductDetailsPage } from '../pages/product-details.page';
 import { LoginPage } from '../pages/login.page';
 import { AccountPage } from '../pages/account.page';
 import { RegisterPage } from '../pages/register.page';
-import { getProductByName } from '../utils/products';
-import { products } from '../data/products.data';
-import { ProductResponse } from '../models/product.model';
 import { CheckoutAddressPage } from '../pages/checkout-address.page';
 import { CheckoutPaymentPage } from '../pages/checkout-paymanet.page';
 import { CheckoutAuthPage } from '../pages/checkout-auth.page';
 import { CheckoutCartPage } from '../pages/checkout-cart.page';
+import { products } from '../data/products.data';
+import { getProductByName } from '../utils/products';
 
 interface Pages {
   accountPage: AccountPage;
@@ -20,18 +19,12 @@ interface Pages {
   checkoutPaymentPage: CheckoutPaymentPage;
   homePage: HomePage;
   loginPage: LoginPage;
-  product: ProductResponse;
+  productDetailsPageOptions: { productName: string };
   productDetailsPage: ProductDetailsPage;
-  productOptions: { name: string };
   registerPage: RegisterPage;
 }
 
 export const pageObjectTest = baseTest.extend<Pages>({
-  productOptions: [{ name: products.boltCutters }, { option: true }],
-  product: async ({ productOptions }, use) => {
-    const product = await getProductByName(productOptions.name);
-    await use(product);
-  },
   accountPage: async ({ page }, use) => {
     const accountPage = new AccountPage(page);
     await accountPage.goto();
@@ -62,8 +55,15 @@ export const pageObjectTest = baseTest.extend<Pages>({
     await homePage.goto();
     await use(homePage);
   },
-  productDetailsPage: async ({ page, product }, use) => {
+  productDetailsPageOptions: [
+    { productName: products.boltCutters },
+    { option: true },
+  ],
+  productDetailsPage: async ({ page, productDetailsPageOptions }, use) => {
     const productDetailsPage = new ProductDetailsPage(page);
+    const product = await getProductByName(
+      productDetailsPageOptions.productName,
+    );
     await productDetailsPage.goto(product.id);
     await use(productDetailsPage);
   },

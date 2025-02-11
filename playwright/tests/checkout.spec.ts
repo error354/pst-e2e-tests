@@ -1,15 +1,19 @@
 import { expect, test } from '../src/fixtures/merge.fixture';
-import { Product } from '../src/models/product.model';
+import { Product, ProductResponse } from '../src/models/product.model';
 import { customer } from '../src/data/users.data';
 import { prepareRandomAddress } from '../src/factories/address.factory';
 import { prepareRandomCard } from '../src/factories/card.factory';
 import { prepareRandomBankTransfer } from '../src/factories/bank-transfer.factory';
 import { CheckoutCartPage } from '../src/pages/checkout-cart.page';
+import { getProductByName } from '../src/utils/products';
+import { products } from '../src/data/products.data';
 
+let product: ProductResponse;
 let productInCart: Product;
 let checkoutCartPage: CheckoutCartPage;
 
-test.beforeAll(async ({ product }) => {
+test.beforeAll(async () => {
+  product = await getProductByName(products.boltCutters);
   productInCart = {
     id: product.id,
     quantity: 2,

@@ -1,10 +1,14 @@
+import { products } from '../src/data/products.data';
 import { expect, test } from '../src/fixtures/merge.fixture';
-import { Product } from '../src/models/product.model';
+import { Product, ProductResponse } from '../src/models/product.model';
+import { getProductByName } from '../src/utils/products';
 
 test.describe('Cart', () => {
+  let product: ProductResponse;
   let productInCart: Product;
 
-  test.beforeAll(async ({ product }) => {
+  test.beforeAll(async () => {
+    product = await getProductByName(products.boltCutters);
     productInCart = {
       id: product.id,
       quantity: 2,
@@ -17,7 +21,6 @@ test.describe('Cart', () => {
 
   test('can change quantity in cart', async ({
     checkoutCartPage,
-    product,
     alertComponent,
     navbarComponent,
   }) => {
@@ -34,7 +37,6 @@ test.describe('Cart', () => {
 
   test('can delete product from cart', async ({
     checkoutCartPage,
-    product,
     alertComponent,
   }) => {
     await checkoutCartPage.deleteProduct(product.name);

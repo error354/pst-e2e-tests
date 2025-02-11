@@ -1,11 +1,21 @@
 import { products } from '../src/data/products.data';
 import { expect, test } from '../src/fixtures/merge.fixture';
+import { ProductResponse } from '../src/models/product.model';
 import { getProductByName } from '../src/utils/products';
+
+let product: ProductResponse;
+
+test.use({
+  productDetailsPageOptions: { productName: products.boltCutters },
+});
+
+test.beforeAll(async () => {
+  product = await getProductByName(products.boltCutters);
+});
 
 test.describe('Product details', () => {
   test('can add product to the cart', async ({
     productDetailsPage,
-    product,
     alertComponent,
     navbarComponent,
   }) => {
@@ -26,7 +36,6 @@ test.describe('Product details', () => {
 
   test('can add many copies of product to the cart', async ({
     productDetailsPage,
-    product,
     alertComponent,
     navbarComponent,
   }) => {
@@ -48,7 +57,6 @@ test.describe('Product details', () => {
   test('can add many products to the cart', async ({
     page,
     productDetailsPage,
-    product,
     alertComponent,
     navbarComponent,
   }) => {

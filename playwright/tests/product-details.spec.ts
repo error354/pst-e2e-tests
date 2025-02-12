@@ -6,7 +6,7 @@ import { getProductByName } from '../src/utils/products';
 let product: ProductResponse;
 
 test.use({
-  productDetailsPageOptions: { productName: products.boltCutters },
+  productDetailsPageProductName: products.boltCutters,
 });
 
 test.beforeAll(async () => {

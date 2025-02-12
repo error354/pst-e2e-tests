@@ -19,7 +19,7 @@ interface Pages {
   checkoutPaymentPage: CheckoutPaymentPage;
   homePage: HomePage;
   loginPage: LoginPage;
-  productDetailsPageOptions: { productName: string };
+  productDetailsPageProductName: string;
   productDetailsPage: ProductDetailsPage;
   registerPage: RegisterPage;
 }
@@ -55,15 +55,10 @@ export const pageObjectTest = baseTest.extend<Pages>({
     await homePage.goto();
     await use(homePage);
   },
-  productDetailsPageOptions: [
-    { productName: products.boltCutters },
-    { option: true },
-  ],
-  productDetailsPage: async ({ page, productDetailsPageOptions }, use) => {
+  productDetailsPageProductName: [products.boltCutters, { option: true }],
+  productDetailsPage: async ({ page, productDetailsPageProductName }, use) => {
     const productDetailsPage = new ProductDetailsPage(page);
-    const product = await getProductByName(
-      productDetailsPageOptions.productName,
-    );
+    const product = await getProductByName(productDetailsPageProductName);
     await productDetailsPage.goto(product.id);
     await use(productDetailsPage);
   },
